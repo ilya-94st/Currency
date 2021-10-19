@@ -7,10 +7,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.currencynb.model.CurrencyResponse
 import com.example.currencynb.other.Resource
 import com.example.currencynb.repository.CurrencyRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import javax.inject.Inject
 
-class ViewModelCurrency(var currencyRepository: CurrencyRepository) :ViewModel() {
+@HiltViewModel
+class ViewModelCurrency @Inject constructor(private val currencyRepository: CurrencyRepository
+) :ViewModel() {
    private val _itemsCurrency: MutableLiveData<Resource<CurrencyResponse>> = MutableLiveData()
 
     var currencyPage = 1

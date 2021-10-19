@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat.finishAffinity
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.currencynb.R
@@ -16,13 +17,14 @@ import com.example.currencynb.databinding.FragmentCurrencyBinding
 import com.example.currencynb.other.Resource
 import com.example.currencynb.ui.MainActivity
 import com.example.currencynb.ui.ViewModelCurrency
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
 
-
+@AndroidEntryPoint
 class CurrencyFragment : BaseFragment<FragmentCurrencyBinding>() {
     lateinit var currencyAdapter: CurrencyAdapter
-    lateinit var viewModelCurrency: ViewModelCurrency
+    private val viewModelCurrency: ViewModelCurrency by viewModels()
     override fun getFragmentBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
@@ -30,7 +32,6 @@ class CurrencyFragment : BaseFragment<FragmentCurrencyBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModelCurrency = (activity as MainActivity).viewModelCurrency
         initAdapter()
         time()
         binding.ivSettings.setOnClickListener {
