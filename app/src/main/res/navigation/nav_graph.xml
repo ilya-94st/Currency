@@ -9,10 +9,20 @@
         android:id="@+id/currencyFragment"
         android:name="com.example.currencynb.ui.fragments.CurrencyFragment"
         android:label="fragment_currency"
-        tools:layout="@layout/fragment_currency" />
+        tools:layout="@layout/fragment_currency" >
+        <action
+            android:id="@+id/action_currencyFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.currencynb.ui.fragments.SettingsFragment"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_currencyFragment"
+            app:destination="@id/currencyFragment"
+            app:popUpTo="@id/settingsFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>
