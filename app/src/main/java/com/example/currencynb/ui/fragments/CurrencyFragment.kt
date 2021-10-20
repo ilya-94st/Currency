@@ -1,6 +1,7 @@
 package com.example.currencynb.ui.fragments
 
 import android.os.Bundle
+import android.provider.ContactsContract
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,7 @@ import com.example.currencynb.ui.ViewModelCurrency
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.time.days
 
 @AndroidEntryPoint
 class CurrencyFragment : BaseFragment<FragmentCurrencyBinding>() {
@@ -82,5 +84,8 @@ class CurrencyFragment : BaseFragment<FragmentCurrencyBinding>() {
         val calendar = Calendar.getInstance()
         val dateFormat = SimpleDateFormat("dd.MM.yy", Locale.getDefault())
         binding.tvTimeNow.text = dateFormat.format(calendar.time)
+        val dayPlus = calendar.get(Calendar.DAY_OF_MONTH) + 1
+        val dateFormat2 = SimpleDateFormat("${dayPlus}.MM.yy", Locale.getDefault())
+        binding.tvTimeTomorrow.text = dateFormat2.format(calendar.time)
     }
 }

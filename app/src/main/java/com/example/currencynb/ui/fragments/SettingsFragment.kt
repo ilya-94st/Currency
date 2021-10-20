@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.RecyclerView
 import com.example.currencynb.R
 import com.example.currencynb.adapter.CurrencyAdapter
@@ -28,8 +29,8 @@ import java.util.*
 class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
     lateinit var settingsAdapter: SettingsAdapter
     private val viewModelCurrency: ViewModelCurrency by viewModels()
-    var list: MutableList<CurrencyResponseItem>? = null
-    private var tasks: List<CurrencyResponseItem> = arrayListOf()
+    var touchHelper: ItemTouchHelper? = null
+
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,
@@ -43,8 +44,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             findNavController().navigateUp()
         }
         viewModelCurrency.itemsCurrency().observe(viewLifecycleOwner,
-            {
-                    response ->
+            { response ->
                 when (response) {
                     is Resource.Success -> {
                         hideProgressBar()
@@ -65,28 +65,34 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 }
             })
 
-        val itemTouchHelperCallBack = object: ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN
-            , ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-        ){
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                tasks = settingsAdapter.differ.currentList
-                val sourcePosition = viewHolder.adapterPosition
-                val targetPosition = target.adapterPosition
-                Collections.swap(tasks,sourcePosition,targetPosition)
-                settingsAdapter.notifyItemMoved(sourcePosition,targetPosition)
-                return true
-            }
+        touchHelper =
+            ItemTouchHelper(object :
+                ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0) {
+                override fun onMove(
+                    p0: RecyclerView,
+                    p1: RecyclerView.ViewHolder,
+                    p2: RecyclerView.ViewHolder
+                ): Boolean {
+                    val adapter = p0.adapter as SettingsAdapter
+                    val sourcePosition = p1.adapterPosition
+                    val targetPosition = p2.adapterPosition
 
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    adapter.notifyItemMoved(sourcePosition, targetPosition)
+                    return true
+                }
+                override fun onSwiped(p0: RecyclerView.ViewHolder, p1: Int) {
 
-            }
-        }
-        ItemTouchHelper(itemTouchHelperCallBack).apply {
-            attachToRecyclerView(binding.rvCurrency)
+                }
+
+                override fun isLongPressDragEnabled(): Boolean {
+                    return false
+                }
+
+            })
+
+        touchHelper?.attachToRecyclerView(binding.rvCurrency)
+        settingsAdapter.setOnItemClickListner {
+            touchHelper!!.startDrag(it)
         }
 
     }
