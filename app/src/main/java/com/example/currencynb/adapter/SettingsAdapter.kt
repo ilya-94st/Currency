@@ -1,6 +1,7 @@
 package com.example.currencynb.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
@@ -41,6 +42,15 @@ class SettingsAdapter: RecyclerView.Adapter<SettingsAdapter.CurrencyViewHolder>(
         val currency = differ.currentList[position]
         holder.binding.tvNameCurrency.text = currency.Cur_Name_Eng
         holder.binding.tvCurrency.text = currency.Cur_Name
-
+        holder.binding.switch1.setOnCheckedChangeListener { _, isChecked ->
+            if(isChecked) {
+            holder.binding.tvCurrency.visibility = View.INVISIBLE
+            holder.binding.tvNameCurrency.visibility = View.INVISIBLE
+            } else {
+                holder.binding.tvCurrency.visibility = View.VISIBLE
+                holder.binding.tvNameCurrency.visibility = View.VISIBLE
+            }
+        }
     }
+
 }
