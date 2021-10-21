@@ -1,35 +1,27 @@
 package com.example.currencynb.ui.fragments
 
 import android.os.Bundle
-import android.os.Handler
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.RecyclerView
-import com.example.currencynb.R
-import com.example.currencynb.adapter.CurrencyAdapter
 import com.example.currencynb.adapter.SettingsAdapter
 import com.example.currencynb.base.BaseFragment
 import com.example.currencynb.databinding.FragmentSettingsBinding
-import com.example.currencynb.model.CurrencyResponseItem
 import com.example.currencynb.other.Resource
-import com.example.currencynb.ui.MainActivity
 import com.example.currencynb.ui.ViewModelCurrency
 import dagger.hilt.android.AndroidEntryPoint
-import okhttp3.internal.concurrent.Task
-import java.util.*
+import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
 class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
-    lateinit var settingsAdapter: SettingsAdapter
+    private lateinit var settingsAdapter: SettingsAdapter
     private val viewModelCurrency: ViewModelCurrency by viewModels()
-    var touchHelper: ItemTouchHelper? = null
+    private var touchHelper: ItemTouchHelper? = null
 
 
     override fun getFragmentBinding(
@@ -43,8 +35,9 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
         binding.ivLeft.setOnClickListener {
             findNavController().navigateUp()
         }
-        viewModelCurrency.itemsCurrency().observe(viewLifecycleOwner,
-            { response ->
+        lifecycleScope.launchWhenCreated {
+            viewModelCurrency.itemsCurrency().collect {
+                    response ->
                 when (response) {
                     is Resource.Success -> {
                         hideProgressBar()
@@ -63,7 +56,9 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                         showProgressBar()
                     }
                 }
-            })
+            }
+        }
+
 
         touchHelper =
             ItemTouchHelper(object :
@@ -91,7 +86,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             })
 
         touchHelper?.attachToRecyclerView(binding.rvCurrency)
-        settingsAdapter.setOnItemClickListner {
+        settingsAdapter.setOnItemClickListener {
             touchHelper!!.startDrag(it)
         }
 

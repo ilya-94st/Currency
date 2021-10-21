@@ -5,28 +5,26 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.currencynb.model.CurrencyResponseItem
 import com.example.currencynb.databinding.ItemsAdapterBinding
+import com.example.currencynb.model.CurrencyRatesItem
 
 class CurrencyAdapter: RecyclerView.Adapter<CurrencyAdapter.CurrencyViewHolder>() {
 
     inner class CurrencyViewHolder(var binding: ItemsAdapterBinding) : RecyclerView.ViewHolder(binding.root)
 
-
-
-    private val diffCallback = object : DiffUtil.ItemCallback<CurrencyResponseItem>() {
-        override fun areItemsTheSame(oldItem: CurrencyResponseItem, newItem: CurrencyResponseItem): Boolean {
+    private val diffCallback = object : DiffUtil.ItemCallback<CurrencyRatesItem>() {
+        override fun areItemsTheSame(oldItem: CurrencyRatesItem, newItem: CurrencyRatesItem): Boolean {
             return oldItem.Cur_ID == newItem.Cur_ID
         }
 
-        override fun areContentsTheSame(oldItem: CurrencyResponseItem, newItem: CurrencyResponseItem): Boolean {
+        override fun areContentsTheSame(oldItem: CurrencyRatesItem, newItem: CurrencyRatesItem): Boolean {
             return oldItem.Cur_ID == newItem.Cur_ID
         }
     }
 
-    val differ = AsyncListDiffer(this, diffCallback)
+    private val differ = AsyncListDiffer(this, diffCallback)
 
-    fun submitList(list: List<CurrencyResponseItem>) = differ.submitList(list)
+    fun submitList(list: List<CurrencyRatesItem>) = differ.submitList(list)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CurrencyViewHolder {
         val binding = ItemsAdapterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -39,8 +37,10 @@ class CurrencyAdapter: RecyclerView.Adapter<CurrencyAdapter.CurrencyViewHolder>(
 
     override fun onBindViewHolder(holder: CurrencyViewHolder, position: Int) {
         val currency = differ.currentList[position]
-        holder.binding.tvNameCurrency.text = currency.Cur_Name_Eng
-        holder.binding.tvCurrency.text = currency.Cur_Name
-        holder.binding.tvChanged.text = currency.Cur_Scale.toString()
+        holder.binding.tvNameCurrency.text = currency.Cur_Name
+        holder.binding.tvCurrency.text = currency.Cur_Abbreviation
+        holder.binding.tvChanged.text = currency.Cur_OfficialRate.toString()
+        holder.binding.tvSaled.text = currency.Cur_OfficialRate.toString()
+
     }
 }

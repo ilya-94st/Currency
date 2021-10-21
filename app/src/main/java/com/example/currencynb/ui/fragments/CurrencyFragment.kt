@@ -1,31 +1,31 @@
 package com.example.currencynb.ui.fragments
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Bundle
-import android.provider.ContactsContract
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.currencynb.R
 import com.example.currencynb.adapter.CurrencyAdapter
 import com.example.currencynb.base.BaseFragment
 import com.example.currencynb.databinding.FragmentCurrencyBinding
 import com.example.currencynb.other.Resource
-import com.example.currencynb.ui.MainActivity
 import com.example.currencynb.ui.ViewModelCurrency
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.time.days
+
 
 @AndroidEntryPoint
 class CurrencyFragment : BaseFragment<FragmentCurrencyBinding>() {
-    lateinit var currencyAdapter: CurrencyAdapter
+    private lateinit var currencyAdapter: CurrencyAdapter
     private val viewModelCurrency: ViewModelCurrency by viewModels()
     override fun getFragmentBinding(
         inflater: LayoutInflater,
@@ -36,48 +36,66 @@ class CurrencyFragment : BaseFragment<FragmentCurrencyBinding>() {
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
         time()
+
         binding.ivSettings.setOnClickListener {
             findNavController().navigate(R.id.action_currencyFragment_to_settingsFragment)
         }
         binding.ivLeft.setOnClickListener {
             finishAffinity(requireActivity())
         }
-        viewModelCurrency.itemsCurrency().observe(viewLifecycleOwner, {
-                response ->
-            when(response){
-                is Resource.Success ->{
-                    hideProgressBar()
-                    response.data?.let {
-                            newsResponse ->
-                        currencyAdapter.submitList(newsResponse)
+        lifecycleScope.launchWhenCreated {
+            viewModelCurrency.itemsCurrency().collect {
+                    response ->
+                when(response){
+                    is Resource.Success ->{
+                        hideProgressBar()
+                        hideErrorMessage()
+                        response.data?.let {
+                                currencyResponse ->
+                            currencyAdapter.submitList(currencyResponse)
+                        }
                     }
-                }
-                is Resource.Error ->{
-                    hideProgressBar()
-                    response.data?.let {
-                            message->
-                       toast("Error${message}")
-                    }
+                    is Resource.Error ->{
+                        hideProgressBar()
+                        response.message?.let {
+                                message->
+                            toast("Error${message}")
+                            showErrorMessage(message)
+                        }
 
-                }
-                is Resource.Loading ->{
-                    showProgressBar()
+                    }
+                    is Resource.Loading ->{
+                        showProgressBar()
+                    }
                 }
             }
-        })
+        }
     }
 
     private fun hideProgressBar() {
         binding.progressBar.visibility = View.INVISIBLE
+        binding.ivSettings.visibility = View.VISIBLE
     }
 
     private fun showProgressBar() {
         binding.progressBar.visibility = View.VISIBLE
+        binding.ivSettings.visibility = View.INVISIBLE
     }
 
     private fun initAdapter() {
         currencyAdapter = CurrencyAdapter()
         binding.rvCurrency.adapter = currencyAdapter
+    }
+
+    private fun hideErrorMessage() {
+        binding.tvError.visibility = View.INVISIBLE
+    }
+
+    private fun showErrorMessage(message: String) {
+        binding.tvError.visibility = View.VISIBLE
+        binding.tvError.text = message
+        binding.ivSettings.visibility = View.INVISIBLE
+
     }
 
     private fun time() {

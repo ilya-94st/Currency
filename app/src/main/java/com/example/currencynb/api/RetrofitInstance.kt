@@ -6,7 +6,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class RetrofitInstanse {
+class RetrofitInstance {
     companion object {
         private val retrofit by lazy {
             val logging  = HttpLoggingInterceptor()
@@ -20,7 +20,7 @@ class RetrofitInstanse {
                 .client(client)
                 .build()
         }
-        val api by lazy {
+        val api: CurrencyApi by lazy {
             retrofit.create(CurrencyApi::class.java)
         }
     }
