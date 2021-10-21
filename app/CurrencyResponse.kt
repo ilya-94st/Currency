@@ -1,1 +1,0 @@
-class CurrencyResponse : ArrayList<CurrencyResponseItem>()

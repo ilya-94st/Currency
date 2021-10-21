@@ -2,16 +2,14 @@ package com.example.currencynb.di
 
 import com.example.currencynb.api.CurrencyApi
 import com.example.currencynb.other.Constants
-import com.example.currencynb.repository.CurrencyRepository
+import com.example.currencynb.main.repository.CurrencyRepository
+import com.example.currencynb.main.repository.MainRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.*
 import javax.inject.Singleton
 
 @Module
@@ -28,6 +26,6 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideMainRepository() = CurrencyRepository()
+    fun provideMainRepository(api: CurrencyApi): MainRepository = CurrencyRepository(api)
 
 }

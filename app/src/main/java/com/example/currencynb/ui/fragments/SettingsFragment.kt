@@ -13,7 +13,7 @@ import com.example.currencynb.adapter.SettingsAdapter
 import com.example.currencynb.base.BaseFragment
 import com.example.currencynb.databinding.FragmentSettingsBinding
 import com.example.currencynb.other.Resource
-import com.example.currencynb.ui.ViewModelCurrency
+import com.example.currencynb.main.viewModel.ViewModelCurrency
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 

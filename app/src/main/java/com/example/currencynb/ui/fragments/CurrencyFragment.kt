@@ -1,8 +1,5 @@
 package com.example.currencynb.ui.fragments
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +13,7 @@ import com.example.currencynb.adapter.CurrencyAdapter
 import com.example.currencynb.base.BaseFragment
 import com.example.currencynb.databinding.FragmentCurrencyBinding
 import com.example.currencynb.other.Resource
-import com.example.currencynb.ui.ViewModelCurrency
+import com.example.currencynb.main.viewModel.ViewModelCurrency
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import java.text.SimpleDateFormat

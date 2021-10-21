@@ -1,4 +1,4 @@
-package com.example.currencynb.ui
+package com.example.currencynb.main.viewModel
 
 import android.app.Application
 import android.content.Context
@@ -11,7 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.currencynb.BaseApplication
 import com.example.currencynb.model.CurrencyRates
 import com.example.currencynb.other.Resource
-import com.example.currencynb.repository.CurrencyRepository
+import com.example.currencynb.main.repository.CurrencyRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,22 +39,12 @@ getCurrency()
       safeBreakingNewsCall()
     }
 
-    private fun handleCurrency(response: Response<CurrencyRates>) : Resource<CurrencyRates>{
-        if(response.isSuccessful){
-            response.body()?.let {
-                    resultResponse->
-                return Resource.Success(resultResponse)
-            }
-        }
-        return  Resource.Error(response.message())
-    }
-
     private suspend fun safeBreakingNewsCall() {
         _itemsCurrency.value = Resource.Loading()
         try {
             if(hasInternetConnection()) {
                 val response = currencyRepository.getCurrency(currencyPage)
-                _itemsCurrency.value = handleCurrency(response)
+                _itemsCurrency.value = response
             } else {
                 _itemsCurrency.value = Resource.Error("No internet connection")
             }
