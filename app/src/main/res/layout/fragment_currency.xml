@@ -82,17 +82,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvCurrency"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
 
-    </androidx.recyclerview.widget.RecyclerView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvCurrency"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layoutAnimation="@anim/layaout_animation"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:layout_editor_absoluteY="107dp" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
 
     <TextView
         android:id="@+id/tvError"
@@ -100,9 +108,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="@+id/rvCurrency"
-        app:layout_constraintEnd_toStartOf="@+id/rvCurrency"
+        app:layout_constraintBottom_toBottomOf="@+id/swipe"
+        app:layout_constraintEnd_toStartOf="@+id/swipe"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/rvCurrency"
+        app:layout_constraintStart_toEndOf="@+id/swipe"
         app:layout_constraintTop_toBottomOf="@+id/progressBar" />
 </androidx.constraintlayout.widget.ConstraintLayout>

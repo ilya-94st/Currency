@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.example.currencynb.R
 import com.example.currencynb.adapter.SettingsAdapter
 import com.example.currencynb.base.BaseFragment
 import com.example.currencynb.databinding.FragmentSettingsBinding
@@ -20,9 +21,9 @@ import kotlinx.coroutines.flow.collect
 @AndroidEntryPoint
 class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
     private lateinit var settingsAdapter: SettingsAdapter
+    private var isSave: Boolean = false
     private val viewModelCurrency: ViewModelCurrency by viewModels()
     private var touchHelper: ItemTouchHelper? = null
-
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,
@@ -32,6 +33,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
+        saveData()
         binding.ivLeft.setOnClickListener {
             findNavController().navigateUp()
         }
@@ -42,7 +44,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                     is Resource.Success -> {
                         hideProgressBar()
                         response.data?.let { newsResponse ->
-                            settingsAdapter.submitList(newsResponse)
+                            settingsAdapter.songs = newsResponse
                         }
                     }
                     is Resource.Error -> {
@@ -59,7 +61,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             }
         }
 
-
         touchHelper =
             ItemTouchHelper(object :
                 ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0) {
@@ -72,6 +73,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                     val sourcePosition = p1.adapterPosition
                     val targetPosition = p2.adapterPosition
 
+
                     adapter.notifyItemMoved(sourcePosition, targetPosition)
                     return true
                 }
@@ -82,24 +84,40 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 override fun isLongPressDragEnabled(): Boolean {
                     return false
                 }
-
             })
 
         touchHelper?.attachToRecyclerView(binding.rvCurrency)
         settingsAdapter.setOnItemClickListener {
             touchHelper!!.startDrag(it)
         }
-
     }
 
     private fun hideProgressBar() {
         binding.progressBar.visibility = View.INVISIBLE
     }
+
     private fun showProgressBar() {
         binding.progressBar.visibility = View.VISIBLE
     }
+
     private fun initAdapter() {
         settingsAdapter = SettingsAdapter()
         binding.rvCurrency.adapter = settingsAdapter
+    }
+
+    private fun saveData() {
+       binding.ivSettings.setOnClickListener {
+          // viewModelCurrency.insert(settingsAdapter.songs)
+           isSave = true
+           snackBar("save data")
+           val bundle = Bundle().apply {
+               putBoolean("save", isSave)
+           }
+           findNavController().navigate(
+               R.id.action_settingsFragment_to_currencyFragment,
+               bundle
+           )
+
+       }
     }
 }

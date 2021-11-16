@@ -5,26 +5,27 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.currencynb.data.EtCurrency
 import com.example.currencynb.databinding.ItemsAdapterBinding
-import com.example.currencynb.model.CurrencyRatesItem
 
-class CurrencyAdapter: RecyclerView.Adapter<CurrencyAdapter.CurrencyViewHolder>() {
+
+class Adapter(): RecyclerView.Adapter<Adapter.CurrencyViewHolder>() {
 
     inner class CurrencyViewHolder(var binding: ItemsAdapterBinding) : RecyclerView.ViewHolder(binding.root)
 
-    private val diffCallback = object : DiffUtil.ItemCallback<CurrencyRatesItem>() {
-        override fun areItemsTheSame(oldItem: CurrencyRatesItem, newItem: CurrencyRatesItem): Boolean {
-            return oldItem.Cur_ID == newItem.Cur_ID
+    private val diffCallback = object : DiffUtil.ItemCallback<EtCurrency>() {
+        override fun areItemsTheSame(oldItem: EtCurrency, newItem: EtCurrency): Boolean {
+            return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: CurrencyRatesItem, newItem: CurrencyRatesItem): Boolean {
-            return oldItem.Cur_ID == newItem.Cur_ID
+        override fun areContentsTheSame(oldItem: EtCurrency, newItem: EtCurrency): Boolean {
+            return oldItem.id == newItem.id
         }
     }
 
     private val differ = AsyncListDiffer(this, diffCallback)
 
-    fun submitList(list: List<CurrencyRatesItem>) = differ.submitList(list)
+    fun submitList(list: List<EtCurrency>) = differ.submitList(list)
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CurrencyViewHolder {

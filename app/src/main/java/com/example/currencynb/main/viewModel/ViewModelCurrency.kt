@@ -7,21 +7,23 @@ import android.net.ConnectivityManager.*
 import android.net.NetworkCapabilities.*
 import android.os.Build
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.currencynb.BaseApplication
+import com.example.currencynb.data.EtCurrency
 import com.example.currencynb.model.CurrencyRates
 import com.example.currencynb.other.Resource
-import com.example.currencynb.main.repository.CurrencyRepository
+import com.example.currencynb.main.repository.MainRepository
+import com.example.currencynb.model.CurrencyRatesItem
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import retrofit2.Response
 import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
-class ViewModelCurrency @Inject constructor(private val currencyRepository: CurrencyRepository, app: Application
+class ViewModelCurrency @Inject constructor(private val currencyRepository: MainRepository, app: Application
 ) :AndroidViewModel(app) {
    private val _itemsCurrency: MutableStateFlow<Resource<CurrencyRates>> = MutableStateFlow(Resource.Loading())
 
@@ -30,7 +32,7 @@ class ViewModelCurrency @Inject constructor(private val currencyRepository: Curr
     fun itemsCurrency() : StateFlow<Resource<CurrencyRates>> {
         return _itemsCurrency
     }
-
+  
     init {
 getCurrency()
     }
@@ -56,7 +58,6 @@ getCurrency()
         }
     }
 
-
     private fun hasInternetConnection(): Boolean {
         val connectivityManager = getApplication<BaseApplication>().getSystemService(
             Context.CONNECTIVITY_SERVICE
@@ -81,5 +82,11 @@ getCurrency()
             }
         }
         return false
+    }
+
+    fun read() = currencyRepository.read().asLiveData()
+
+    fun insert(items: List<EtCurrency>) = viewModelScope.launch {
+         currencyRepository.insert(items)
     }
 }

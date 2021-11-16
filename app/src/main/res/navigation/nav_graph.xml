@@ -13,6 +13,11 @@
         <action
             android:id="@+id/action_currencyFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
+        <argument
+            android:name="save"
+            app:argType="boolean"
+            android:defaultValue="true"
+            />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"

@@ -28,7 +28,9 @@ class SettingsAdapter: RecyclerView.Adapter<SettingsAdapter.CurrencyViewHolder>(
 
     private val differ = AsyncListDiffer(this, diffCallback)
 
-    fun submitList(list: List<CurrencyRatesItem>) = differ.submitList(list)
+    var songs: List<CurrencyRatesItem>
+        get() = differ.currentList
+        set(value) = differ.submitList(value)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CurrencyViewHolder {
         val binding = ItemsSetingsAdapterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
